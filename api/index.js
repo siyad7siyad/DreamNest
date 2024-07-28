@@ -2,6 +2,7 @@ import express from "express";
 import connectDB from "./framework/database/connection.js";
 import userRouter from "./framework/webserver/routes/userRoute.js"
 import authRouter from "./framework/webserver/routes/authRoute.js"
+import errorHandlingMiddleware from "./framework/webserver/middleware/errorHandling.js";
 
 connectDB();
 
@@ -16,3 +17,4 @@ app.listen(3000, () => {
 
 app.use("/api/user",userRouter)
 app.use("/api/auth",authRouter)
+app.use(errorHandlingMiddleware)
