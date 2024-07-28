@@ -4,16 +4,22 @@ import axios from "axios";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { useNavigate } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  signInStart,
+  signInSuccess,
+  signInFailure,
+} from "../../redux/user/userSlice";
 
 export default function SignIn() {
   const [formData, setFormData] = useState({
     email: "",
     password: "",
   });
-  const [error, setError] = useState(null);
-  const [loading, setLoading] = useState(false);
+  const { loading, error } = useSelector((state) => state.user);
 
   const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   const handleChange = (e) => {
     setFormData({
@@ -26,8 +32,7 @@ export default function SignIn() {
     e.preventDefault();
 
     try {
-      setLoading(true);
-      setError(null);
+      dispatch(signInStart());
       const res = await axios.post(
         "http://localhost:3000/api/auth/signin",
         formData,
@@ -39,20 +44,20 @@ export default function SignIn() {
       );
       console.log(res.data);
       if (res.data.success === false) {
-        setLoading(false);
+        dispatch(signInFailure(res.data.message));
 
         toast.error(res.data.message);
         return;
       }
-      setLoading(false);
+      dispatch(signInSuccess(res.data.user));
       toast.success("Login successfull!");
       navigate("/");
     } catch (error) {
-      setLoading(false);
+      dispatch(signInFailure());
       const errorMessage = error.response?.data?.message || error.message;
 
       toast.error(errorMessage);
-    }a
+    }
   };
 
   return (

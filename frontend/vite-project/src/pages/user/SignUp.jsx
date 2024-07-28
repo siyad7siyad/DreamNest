@@ -56,7 +56,7 @@ export default function SignUp() {
         return;
       }
       setLoading(false);
-      toast.success("Sign up successfull!");
+      toast.success(res.data.message || "Sign up successfull!");
       navigate("/sign-in");
     } catch (error) {
       setLoading(false);
